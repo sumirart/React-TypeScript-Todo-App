@@ -1,24 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Input from "./Components/Input";
+import List from "./Components/List";
+import "./App.css";
 
 function App() {
+  const [inputTodo, setInputTodo] = useState<string>("");
+  const [todos, setTodos] = useState<string[]>([]);
+
+  const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
+    setInputTodo(e.currentTarget.value);
+  };
+
+  const handleSubmit = (e: React.FormEvent): void => {
+    e.preventDefault();
+    const target = e.target as typeof e.target & {
+      todo: { value: string };
+    };
+    const todo = target.todo.value;
+    setInputTodo("");
+    setTodos([...todos, todo]);
+  };
+
+  // const handleDeleteTodo = (e: React.MouseEvent<HTMLSpanElement>): void => {
+  //   setTodos(todos.filter((_, index) => index !== 1));
+  // };
+  const handleDeleteTodo = (e: React.MouseEvent, index: number): void => {
+    setTodos(todos.filter((_, i) => i !== index));
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Todo App</h1>
+
+      <Input
+        inputTodo={inputTodo}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+      />
+      <List todos={todos} handleDeleteTodo={handleDeleteTodo} />
     </div>
   );
 }
